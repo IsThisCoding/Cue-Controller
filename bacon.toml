@@ -1,0 +1,11 @@
+[jobs.dev]
+command = [
+    "cargo", "clippy", 
+    "--all-targets", 
+    "--all-features", 
+    "--", 
+    "-W", "clippy::all", 
+    "-D", "warnings"
+]
+need_stdout = false
+

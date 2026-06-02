@@ -1,0 +1,17 @@
+[package]
+name = "cue-controller"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+iced = "0.14.0"
+kira = "0.12.1"
+native-theme-iced = "0.5.7"
+tokio = { version="1.52.3", features = ["full"]}
+
+[workspace.lints.clippy]
+all = "warn"
+
+[workspace.lints.rust]
+warnings = "deny"
+
