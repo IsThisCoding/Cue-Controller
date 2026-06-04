@@ -4,10 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+crossbeam-channel = "0.5.15"
 iced = "0.14.0"
+indexmap = { version = "2.14.0", features = ["serde"] }
+jiff = { version = "0.2.28", features = ["serde"] }
 kira = "0.12.1"
 native-theme-iced = "0.5.7"
+serde = "1.0.228"
+serde_json = "1.0.150"
 tokio = { version="1.52.3", features = ["full"]}
+uuid = { version = "1.23.2", features = ["v4"] }
 
 [workspace.lints.clippy]
 all = "warn"

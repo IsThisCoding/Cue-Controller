@@ -1,72 +1,38 @@
-use iced::Element;
-use iced::widget::{button, container};
-use kira::{
-    AudioManager, AudioManagerSettings, DefaultBackend, Tween, sound::static_sound::StaticSoundData,
-};
+mod common;
+mod engine;
+mod ui;
 
-struct AudioPlayer {
-    filepath: String,
-    manager: AudioManager,
-    active_sound: Option<kira::sound::static_sound::StaticSoundHandle>,
-}
+use common::cue::Command;
+use crossbeam_channel::unbounded;
+use iced::Task;
 
-#[derive(Debug, Clone, Copy)]
-enum Message {
-    Play,
-    Pause,
-}
-
-impl AudioPlayer {
-    fn new() -> Self {
-        let filepath = "/home/michael/Cabaret-Theatre/Big-Chair/Sound Effects/213925__diboz__pistol_riccochet.ogg".to_string();
-        let manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default())
-            .expect("Failed to initialize AudioManager");
-
-        Self {
-            filepath,
-            manager,
-            active_sound: None,
-        }
-    }
-
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::Play => {
-                println!("Playing track {}!", self.filepath);
-                // Handle the file loading and playback results inside the UI loop
-                if let Ok(sound_data) = StaticSoundData::from_file(&self.filepath) {
-                    self.active_sound = match self.manager.play(sound_data) {
-                        Ok(val) => Some(val),
-                        Err(e) => {
-                            println!("Error Occured: {}", e);
-                            None
-                        }
-                    }
-                }
-            }
-            Message::Pause => {
-                println!("Pause requested!");
-                if let Some(to_pause) = &mut self.active_sound {
-                    to_pause.pause(Tween {
-                        ..Default::default()
-                    });
-                }
-            }
-        }
-    }
-
-    fn view(&self) -> Element<'_, Message> {
-        use iced::widget::column;
-        let play_button = button("Play").on_press(Message::Play);
-        let pause_button = button("Pause").on_press(Message::Pause);
-
-        let interface = column![play_button, pause_button];
-
-        container(interface).into()
-    }
-}
+use crate::{common::workspace::Workspace, ui::Session};
 
 fn main() -> iced::Result {
-    // Iced manages instantiation, state updates, and the window view context
-    iced::application(AudioPlayer::new, AudioPlayer::update, AudioPlayer::view).run()
+    println!("Console started");
+
+    let (command_tx, command_rx) = unbounded::<Command>();
+
+    engine::spawn_backend(command_rx);
+
+    command_tx
+        .send(Command::PlayRawSound("testsound.mp3".to_string()))
+        .unwrap();
+
+    command_tx.send(Command::StopAll).unwrap();
+
+    let default_workspace = Workspace::new("mock".to_string());
+
+    iced::application(
+        move || {
+            (
+                Session::new(command_tx.clone(), Workspace::new("mock".to_string())),
+                Task::none(),
+            )
+        },
+        Session::update,
+        Session::view,
+    )
+    .title("Goomba")
+    .run()
 }
