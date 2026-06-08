@@ -11,8 +11,8 @@ pub struct Workspace {
     pub id: uuid::Uuid,
     created_at: Timestamp,
     updated_at: Timestamp,
-    max_id: u64,
-    cue_list: IndexMap<u64, Cue>,
+    pub max_id: u64,
+    pub cue_list: IndexMap<u64, Cue>,
 }
 
 impl Workspace {

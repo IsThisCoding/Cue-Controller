@@ -5,7 +5,7 @@ use crate::common::{
 };
 use crossbeam_channel::Sender;
 use iced::{
-    Element, Length,
+    Border, Color, Element, Length,
     widget::{column, container, row},
     window,
 };
@@ -17,12 +17,13 @@ use uuid::Uuid;
 mod components;
 mod persistence;
 mod styles;
+pub mod views;
 
 pub struct Session {
     pub command_tx: Sender<Command>,
-    workspace: Workspace,
-    selected_cue_id: Option<CueId>,
-    pub active_states: HashMap<CueId, PlaybackRate>,
+    pub workspace: Workspace,
+    pub selected_cue_id: Option<CueId>,
+    pub active_cues: HashMap<CueId, Cue>,
 }
 
 pub enum CuePlaybackState {
@@ -31,6 +32,7 @@ pub enum CuePlaybackState {
     Paused,
 }
 
+#[derive(Clone, Debug)]
 pub enum Message {
     FireSelected,
     PauseAll,
@@ -38,6 +40,7 @@ pub enum Message {
     StopAll,
     PlayCue(CueId),
     StopCue(CueId),
+    SelectCue(CueId),
 }
 
 impl Session {
@@ -46,7 +49,7 @@ impl Session {
             command_tx,
             workspace,
             selected_cue_id: None,
-            active_states: HashMap::new(),
+            active_cues: HashMap::new(),
         }
     }
     pub fn update(&mut self, message: Message) {
@@ -54,28 +57,13 @@ impl Session {
             Message::FireSelected => {
                 println!("Firing selected cue!")
             }
+            Message::SelectCue(id) => {
+                self.selected_cue_id = Some(id);
+            }
             _ => println!("Implement this!"),
         }
     }
     pub fn view(&self) -> Element<'_, Message> {
-        let global_header = components::header::view(self);
-        let cues_display = container("Main Workspace Cue Grid Panel Goes Here")
-            .width(Length::FillPortion(20))
-            .height(Length::FillPortion(7))
-            .center_x(Length::Fill)
-            .center_y(Length::Fill);
-
-        let active_cues = container("Active Cues")
-            .width(Length::FillPortion(2))
-            .height(Length::FillPortion(2));
-
-        let row2 = row![cues_display, active_cues];
-
-        let window_layout = column![global_header, row2];
-
-        container(window_layout)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .into()
+        views::control_deck::view(self)
     }
 }
