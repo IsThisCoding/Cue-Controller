@@ -41,6 +41,9 @@ pub enum Message {
     PlayCue(CueId),
     StopCue(CueId),
     SelectCue(CueId),
+    AddDefaultCue,
+    SelectedCueNameChanged(String),
+    PendingCueNameChanged,
 }
 
 impl Session {
@@ -59,6 +62,21 @@ impl Session {
             }
             Message::SelectCue(id) => {
                 self.selected_cue_id = Some(id);
+                println!("{}", id);
+            }
+            Message::AddDefaultCue => {
+                self.workspace.add_cue("A cue");
+            }
+            Message::SelectedCueNameChanged(name) => {
+                if let Some(id) = self.selected_cue_id
+                    && let Some(cue) = self.workspace.cue_list.get_mut(&id)
+                {
+                    cue.name = if name.is_empty() {
+                        format!("Cue {}", id)
+                    } else {
+                        name
+                    }
+                }
             }
             _ => println!("Implement this!"),
         }

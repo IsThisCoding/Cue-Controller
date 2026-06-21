@@ -6,7 +6,10 @@ use common::cue::Command;
 use crossbeam_channel::unbounded;
 use iced::Task;
 
-use crate::{common::workspace::Workspace, ui::Session};
+use crate::{
+    common::{cue::Cue, workspace::Workspace},
+    ui::Session,
+};
 
 fn main() -> iced::Result {
     println!("Console started");
@@ -21,7 +24,7 @@ fn main() -> iced::Result {
 
     command_tx.send(Command::StopAll).unwrap();
 
-    let default_workspace = Workspace::new("mock".to_string());
+    let mut default_workspace = Workspace::new("mock".to_string());
 
     iced::application(
         move || {

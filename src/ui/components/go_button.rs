@@ -1,29 +1,14 @@
-use iced::{Border, Color, Element, Length, widget::button};
+use iced::{
+    Border, Color, Element, Length,
+    widget::{button, text},
+};
 
-use crate::ui::{Message, Session};
+use crate::ui::{Message, Session, styles::go_button_style};
 
 pub fn view(session: &Session) -> Element<'_, Message> {
-    button("GO")
+    button(text("GO").size(32).center())
         .on_press(Message::FireSelected)
+        .on_press(Message::AddDefaultCue)
         .style(go_button_style)
-        .height(Length::Fixed(200.0))
-        .width(Length::Fixed(200.0))
         .into()
-}
-
-fn go_button_style(theme: &iced::Theme, status: button::Status) -> button::Style {
-    match status {
-        button::Status::Pressed => button::Style {
-            text_color: Color::from_rgba(0.0, 0.3, 0.0, 0.7),
-            ..Default::default()
-        },
-        _ => button::Style {
-            text_color: Color::from_rgb(0.0, 1.0, 0.0),
-            border: Border {
-                color: Color::from_rgb(0.0, 0.6, 0.0),
-                ..Default::default()
-            },
-            ..Default::default()
-        },
-    }
 }

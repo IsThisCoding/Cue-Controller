@@ -6,7 +6,7 @@ use indexmap::IndexMap;
 
 use crate::{
     common::{CueId, cue::Cue},
-    ui::{Message, Session},
+    ui::{Message, Session, styles::container_style},
 };
 
 pub fn view(session: &Session) -> Element<'_, Message> {
@@ -22,5 +22,5 @@ pub fn view(session: &Session) -> Element<'_, Message> {
         content = content.push(row_ui).padding([5, 0]);
     }
 
-    container(content).width(Length::Fill).padding(10).into()
+    content.into()
 }

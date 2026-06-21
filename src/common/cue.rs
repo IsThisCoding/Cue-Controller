@@ -1,7 +1,5 @@
+use crate::common::CueId;
 use serde::{Deserialize, Serialize};
-use std::sync::atomic::{AtomicU64, Ordering};
-
-type CueId = u64;
 
 pub enum Command {
     FireNext,
@@ -41,16 +39,6 @@ pub struct Cue {
     pub id: CueId,
     pub name: String,
     pub note: String,
-    pub config: CueTypeConfig,
-    pub metadata: CueMetadata,
-}
-
-static CUE_ID_COUNTER: AtomicU64 = AtomicU64::new(1);
-
-pub fn next_cue_id() -> u64 {
-    CUE_ID_COUNTER.fetch_add(1, Ordering::Relaxed)
-}
-
-pub fn seed_cue_id_counter(val: u64) {
-    CUE_ID_COUNTER.store(val, Ordering::SeqCst);
+    // pub config: CueTypeConfig,
+    // pub metadata: CueMetadata,
 }
