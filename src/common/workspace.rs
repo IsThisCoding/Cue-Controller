@@ -41,6 +41,7 @@ impl Workspace {
                 id,
                 name: name.to_string(),
                 note: "".to_string(),
+                number: (self.cue_list.len() + 1).to_string(),
             },
         );
     }

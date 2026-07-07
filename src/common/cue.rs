@@ -39,6 +39,7 @@ pub struct Cue {
     pub id: CueId,
     pub name: String,
     pub note: String,
+    pub number: String,
     // pub config: CueTypeConfig,
     // pub metadata: CueMetadata,
 }

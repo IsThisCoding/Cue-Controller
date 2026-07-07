@@ -1,10 +1,26 @@
+use iced::Background;
 use iced::Border;
 use iced::Color;
 use iced::Theme;
 use iced::theme;
+use iced::widget::MouseArea;
 use iced::widget::button;
 use iced::widget::button::StyleFn;
 use iced::widget::container;
+use iced::widget::text_input;
+
+pub fn editable_cell_style(theme: &Theme, status: text_input::Status) -> text_input::Style {
+    text_input::Style {
+        background: Background::Color(Color::TRANSPARENT),
+        border: Border {
+            ..Default::default()
+        },
+        icon: Color::default(),
+        placeholder: Color::default(),
+        value: Color::default(),
+        selection: Color::default(),
+    }
+}
 
 pub fn go_button_style(theme: &Theme, status: button::Status) -> button::Style {
     match status {
@@ -21,6 +37,19 @@ pub fn go_button_style(theme: &Theme, status: button::Status) -> button::Style {
             },
             ..Default::default()
         },
+    }
+}
+
+pub fn selected_cue_style(theme: &Theme) -> container::Style {
+    container::Style {
+        background: Some(Background::Color(Color::from_rgb(0.2, 0.4, 0.8))),
+        ..Default::default()
+    }
+}
+
+pub fn default_cue_style(theme: &Theme) -> container::Style {
+    container::Style {
+        ..Default::default()
     }
 }
 

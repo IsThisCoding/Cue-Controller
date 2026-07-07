@@ -36,6 +36,6 @@ fn main() -> iced::Result {
         Session::update,
         Session::view,
     )
-    .title("Goomba")
+    .title("title")
     .run()
 }
