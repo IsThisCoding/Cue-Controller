@@ -1,7 +1,8 @@
 use iced::{
     Color, Element,
     Length::{self, FillPortion},
-    widget::{button, column, container, mouse_area, row, text, text_input},
+    advanced::Widget,
+    widget::{self, button, column, container, mouse_area, row, text, text_input},
 };
 
 use crate::{
@@ -22,15 +23,20 @@ fn editable_cell<'a>(
     width: Length,
     on_input: impl Fn(String) -> Message + 'a,
     on_double_click: Message,
+    id: widget::Id,
 ) -> Element<'a, Message> {
     if is_editing {
-        text_input("", value)
+        let id = widget::Id::unique();
+        let input = text_input("", value)
             .on_input(on_input)
+            .on_submit(Message::StopEditing)
+            .id(id)
             .width(width)
-            .style(editable_cell_style)
-            .into()
+            .size(12)
+            .style(editable_cell_style);
+        container(input).height(20).into()
     } else {
-        mouse_area(text(value).width(width))
+        mouse_area(text(value).width(width).size(12).height(20))
             .on_double_click(on_double_click)
             .into()
     }
@@ -53,20 +59,24 @@ pub fn view(session: &Session) -> Element<'_, Message> {
     for (index, cue) in session.workspace.cue_list.iter() {
         let is_selected = session.selected_cue_id == Some(cue.id);
 
+        let num_id = widget::Id::unique();
         let number_cell = editable_cell(
             &cue.number,
             is_editing(session, cue.id, EditingField::Number),
             Length::Fixed(50.0),
             Message::SelectedCueNumberChanged,
-            Message::EditCue(cue.id, EditingField::Number),
+            Message::EditCue(cue.id, EditingField::Number, num_id.clone()),
+            num_id,
         );
 
+        let name_id = widget::Id::unique();
         let name_cell = editable_cell(
             &cue.name,
             is_editing(session, cue.id, EditingField::Name),
             Length::Fill,
             Message::SelectedCueNameChanged,
-            Message::EditCue(cue.id, EditingField::Name),
+            Message::EditCue(cue.id, EditingField::Name, name_id.clone()),
+            name_id,
         );
 
         let row_content: Element<'_, Message> = container(

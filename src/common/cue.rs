@@ -9,7 +9,7 @@ pub enum Command {
     PlayRawSound(String),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CueTypeConfig {
     Audio {
         filepath: String,
@@ -21,7 +21,9 @@ pub enum CueTypeConfig {
     },
 }
 
-#[derive(Serialize, Deserialize)]
+impl default for CueTypeConfig::Audio {}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CueMetadata {
     mock_data: String,
 }
@@ -34,12 +36,12 @@ impl Default for CueMetadata {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Cue {
     pub id: CueId,
     pub name: String,
     pub note: String,
     pub number: String,
-    // pub config: CueTypeConfig,
-    // pub metadata: CueMetadata,
+    pub config: CueTypeConfig,
+    pub metadata: CueMetadata,
 }

@@ -10,7 +10,9 @@ use iced::{
         text::Paragraph,
         widget::operation::{self, focusable},
     },
-    widget::{Id, column, container, operation::focus, row, text_editor, text_input},
+    widget::{
+        self, Id, TextInput, column, container, operation::focus, row, text_editor, text_input,
+    },
     window,
 };
 use indexmap::IndexMap;
@@ -57,6 +59,7 @@ pub enum Message {
     PlayCue(CueId),
     StopCue(CueId),
     SelectCue(CueId),
+    AddCue(Cue),
     AddDefaultCue,
     SelectedCueNameChanged(String),
     SelectedCueNumberChanged(String),
@@ -64,7 +67,8 @@ pub enum Message {
     SelectedCueNoteChanged(text_editor::Action),
     PendingCueNameChanged,
     NumberChanged(String),
-    EditCue(CueId, EditingField),
+    EditCue(CueId, EditingField, widget::Id),
+    StopEditing,
 }
 
 impl Session {
@@ -80,10 +84,19 @@ impl Session {
     }
     pub fn update(&mut self, message: Message) -> Task<Message> {
         match message {
-            Message::EditCue(id, field) => {
+            Message::StopEditing => {
+                self.editing_field = None;
+                Task::none()
+            }
+            Message::EditCue(id, field, widget_id) => {
                 self.selected_cue_id = Some(id);
                 self.editing_field = Some(field);
-                Task::none()
+                println!("Focusing {:#?}", widget_id);
+                Task::batch([
+                    widget::operation::focus(widget_id.clone()),
+                    widget::operation::select_all(widget_id.clone()),
+                    widget::operation::move_cursor_to_end(widget_id),
+                ])
             }
             Message::NumberChanged(new_num) => {
                 if let Some(id) = self.selected_cue_id

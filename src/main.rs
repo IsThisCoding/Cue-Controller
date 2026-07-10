@@ -4,7 +4,7 @@ mod ui;
 
 use common::cue::Command;
 use crossbeam_channel::unbounded;
-use iced::Task;
+use iced::{Task, window};
 
 use crate::{
     common::{cue::Cue, workspace::Workspace},

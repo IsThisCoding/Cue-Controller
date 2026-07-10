@@ -13,12 +13,14 @@ pub fn editable_cell_style(theme: &Theme, status: text_input::Status) -> text_in
     text_input::Style {
         background: Background::Color(Color::TRANSPARENT),
         border: Border {
+            width: 1.0,
+            color: Color::from_rgb8(0, 0, 0),
             ..Default::default()
         },
         icon: Color::default(),
         placeholder: Color::default(),
-        value: Color::default(),
-        selection: Color::default(),
+        value: Color::WHITE,
+        selection: Color::TRANSPARENT,
     }
 }
 
